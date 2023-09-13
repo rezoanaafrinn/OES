@@ -33,6 +33,9 @@ Route::get('/logout',[AuthController::class,'logout']);
 Route::get('/forget-password',[AuthController::class,'forgetPasswordload']);
 Route::post('/forget-password',[AuthController::class,'forgetPassword'])->name('forgetPassword');
 
+Route::get('/reset-password',[AuthController::class,'resetPasswordload']);
+Route::post('/reset-password',[AuthController::class,'resetPassword'])->name('resetPassword');
+
 Route::group(['middleware'=>['web','checkAdmin']],function(){
     Route::get('/admin/dashboard',[AuthController::class,'admindashboard']);
 });
