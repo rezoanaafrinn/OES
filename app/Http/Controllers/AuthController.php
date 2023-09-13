@@ -5,14 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User; 
 use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
+use App\Models\PasswordReset;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Carbon;
+use Mail;
 
 class AuthController extends Controller
 {
     public function loadRegister()
     {
+        if(Auth::user() && Auth::user()->is_admin == 1){
+            return redirect('/admin/dashboard');
+        }
+        elseif(Auth::user() && Auth::user()->is_admin == 0){
+            return redirect('/dashboard');
+        }
         return view('register');
     }
 
@@ -32,5 +44,95 @@ class AuthController extends Controller
 
         return back()->with('success','Your Registration has been successful');
 
+    }
+
+    public function loadLogin()
+    {
+        if(Auth::user() && Auth::user()->is_admin == 1){
+            return redirect('/admin/dashboard');
+        }
+        elseif(Auth::user() && Auth::user()->is_admin == 0){
+            return redirect('/dashboard');
+        }
+        return view('login');
+    }
+
+    public function userLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'string|required|email',
+            'password' => 'string|required'
+        ]);
+
+        $userCredential = $request->only('email','password');
+        if(Auth::attempt($userCredential)){
+            
+            if(Auth::user()->is_admin == 1){
+                return redirect('/admin/dashboard');
+            }else{
+                return redirect('/dashboard');
+            }
+        }else{
+            return back()->with('error','Username & Password is incorrect');
+        }
+    }
+
+    public function loaddashboard(){
+        return view ('student.dashboard');
+    }
+
+    public function admindashboard(){
+        return view ('admin.dashboard');
+    }
+
+    public function logout(Request $request){
+        $request->session()->flush();
+        Auth::logout();
+        return redirect('/');
+    }
+
+    public function forgetPasswordload()
+    {
+        return view('forget-password');
+    }
+
+    public function forgetPassword(Request $request)
+    {
+        try{
+            $user = User::where('email',$request->email)->get();
+
+            if(count($user) > 0){
+                $token = Str::random(40);
+                $domain = URL ::to('/');
+                $url = $domain.'/reset-password?token='.$token;
+
+                $data['url'] = $url;
+                $data['email'] = $request->email;
+                $data['title'] = 'Password Reset';
+                $data['body'] = 'Please click on below link to reset your password.';
+
+                Mail::send('forgetPasswordMail',['data'=>$data],function($message) use ($data){
+                    $message->to($data['email'])->subject($data['title']);
+                });
+
+                $dateTime = Carbon::now()->format('Y-m-d H:i:s');
+                
+                PasswordReset::updateOrCreate(
+                    ['email'=>$request->email],
+                    [
+                        'email' => $request->email,
+                        'token' => $token,
+                        'created_at' => $dateTime
+                    ]
+                );
+
+                return back()->with('success','Please check your mail to reset your password.');
+            }
+            else{
+                return back()->with('error','Email is not exists!');
+            }
+        }catch(\Exception $e){
+            return back()->with('error',$e->getMessage());
+        }
     }
 }
