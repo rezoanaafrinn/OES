@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User; 
+use App\Models\User;
+use App\Models\Subject; 
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
@@ -81,8 +82,10 @@ class AuthController extends Controller
         return view ('student.dashboard');
     }
 
-    public function admindashboard(){
-        return view ('admin.dashboard');
+    public function admindashboard()
+    {
+        $subjects = Subject::all();
+        return view ('admin.dashboard',compact('subjects'));
     }
 
     public function logout(Request $request){
