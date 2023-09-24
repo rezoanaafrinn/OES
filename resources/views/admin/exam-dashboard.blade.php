@@ -8,6 +8,35 @@
   +Add Exam
 </button>
 
+<table class = "table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Exam Name</th>
+      <th>Subject</th>
+      <th>Date</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if(count($exams) > 0)
+      @foreach($exams as $exam)
+        <tr>
+          <td>{{ $exam->id}}</td>
+          <td>{{ $exam->exam_name}}</td>
+          <td>{{ $exam->subjects[0]['subject']}}</td>
+          <td>{{ $exam->date}}</td>
+          <td>{{ $exam->time}}hrs</td>
+        </tr>
+      @endforeach
+    @else
+      <tr>
+        <td colspan="5">Exam not found!</td>
+      </tr>
+    @endif
+  </tbody>
+</table>
+
 <!-- Modal -->
 <div class="modal fade" id="addExamModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">  

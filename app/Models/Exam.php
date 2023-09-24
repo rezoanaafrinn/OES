@@ -15,4 +15,9 @@ class Exam extends Model
         'time',
         
     ];
+
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class,'id','subject_id');
+    }
 }
