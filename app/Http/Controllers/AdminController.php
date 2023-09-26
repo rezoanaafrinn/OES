@@ -72,10 +72,52 @@ class AdminController extends Controller
                 'subject_id'=> $request->subject_id,
                 'date' => $request->date,
                 'time' => $request->time,
+                'attempt' => $request->attempt
+
             ]);
             return response()->json(['success'=>true,'msg'=>'Exam added Successfully!']); 
         }catch(\Exception $e){
             return response()->json(['success'=>false,'msg'=>$e->getMessage()]);
         };
     }
+
+    public function getExamDetail($id)
+    {
+        try{
+            $exam = Exam::where('id',$id)->get();
+            return response()->json(['success'=>true,'data'=>$exam]); 
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'msg'=>$e->getMessage()]);
+        };
+    }
+
+    public function updateExam(Request $request)
+    {
+        try{
+            $exam = Exam::find($request->exam_id);
+            $exam->exam_name = $request->exam_name;
+            $exam->subject_id = $request->subject_id;
+            $exam->date = $request->date;
+            $exam->time = $request->time;
+            $exam->attempt = $request->attempt;
+            $exam->save();
+            return response()->json(['success'=>true,'msg'=>'Exam Updated successfully']); 
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'msg'=>$e->getMessage()]);
+        }; 
+    }
+
+    // Delete exam
+
+    public function deleteExam(Request $request)
+    {
+        try{
+            Exam::where('id',$request->exam_id)->delete();
+            return response()->json(['success'=>true,'msg'=>'Exam deleted successfull']);
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'msg'=>$e->getMessage()]);
+        };
+    }
+
+    
 }
