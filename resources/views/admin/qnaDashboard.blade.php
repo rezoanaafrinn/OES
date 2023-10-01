@@ -8,13 +8,38 @@
   +Add Q&A
 </button>
 
+<table class="table">
+  <thead>
+    <th>#</th>
+    <th>Question</th>
+    <th>Answers</th>
+  </thead>
+  <tbody>
+    @if(count($questions) > 0)
+      @foreach($questions as $question)
+      <tr>
+        <td>{{ $question->id }}</td>
+        <td>{{ $question->question }}</td>
+        <td>
+          <a href="#" class="ansButton" data-id="{{ $question->id }}" data-toggle="modal" data-target="#showAnsModel">See Answers</a>
+        </td>
+      </tr>
+      @endforeach
+    @else
+     <tr>
+      <td colspan="3">Questions & Answers not Found</td>
+     </tr>
+    @endif
+  </tbody>
+</table>
+
 <!--Add exam Modal -->
 <div class="modal fade" id="addQnaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">  
   <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Add Q&A</h5>
-        <button id="addAnswer" class="ml-5 btn btn-info">+Add Answer</button>
+        <button id="addAnswer" class="ml-5 btn btn-info">+Add Option</button>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -38,6 +63,36 @@
   </div>
 </div>
 
+<!--Show ans Modal -->
+<div class="modal fade" id="showAnsModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">  
+  <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Show Answers</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <th>#</th>
+            <th>Answer</th>
+            <th>Is Correct</th>
+          </thead>
+          <tbody class="showAnswers">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <span class="error" style="color:red;"></span>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
 <script>
     $(document).ready(function(){
 
@@ -119,6 +174,42 @@
         $(document).on("click",".removeButton",function(){
           $(this).parent().remove();
         });
+
+        // show answers code
+
+        $(".ansButton").click(function(){
+          
+          var questions = @json($questions);  
+          var qid = $(this).attr('data-id');
+          var html = '';
+
+
+          for(let i=0; i < questions.length; i++){
+            if(questions[i]['id'] == qid){
+              
+              var answersLength = questions[i]['answers'].length;
+              for(let j=0; j< answersLength;j++){
+
+                let is_correct = 'No';
+                if(questions[i]['answers'][j]['is_correct'] == 1){
+                  is_correct = 'Yes';
+                }
+                html += `
+                  <tr>
+                    <td>`+(j+1)+`</td>
+                    <td>`+questions[i]['answers'][j]['answer']+`</td>
+                    <td>`+is_correct+`</td>
+                  </tr>
+                `;
+              }
+              break;
+            }
+          }
+
+          $('.showAnswers').html(html);
+
+        });
+
     });
 </script>
 

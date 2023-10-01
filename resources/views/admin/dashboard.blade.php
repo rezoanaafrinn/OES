@@ -13,6 +13,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Subject</th>
+      <th scope="col">Category</th>
       <th scope="col">Edit</th>
       <th scope="col">Delete</th>
     </tr>
@@ -24,6 +25,7 @@
         <tr>
           <td> {{ $subject->id }}</td>
           <td> {{ $subject->subject }}</td>
+          <td> {{ $subject->category }}</td>
           <td>
             <button class="btn btn-info editButton" data-id="{{ $subject->id }}" data-subject="{{ $subject->subject }}" data-toggle="modal" data-target="#editSubjectModel">Edit</button>
           </td>
@@ -54,7 +56,9 @@
       </div>
       <div class="modal-body">
         <label>Subject: </label>
-        <input type="text" name="subject" placeholder="Enter Subject Name" required>
+        <input type="text" name="subject" placeholder="Enter Subject Name" required><br><br>
+        <label>Category: </label>
+        <input type="text" name="category" placeholder="Enter Subject Category" required>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -80,7 +84,9 @@
       @csrf
       <div class="modal-body">
         <label>Subject: </label>
-        <input type="text" name="subject" placeholder="Re-enter Subject" id="edit_subject" required>
+        <input type="text" name="subject" placeholder="Re-enter Subject" id="edit_subject" required><br><br>
+        <label>Category: </label>
+        <input type="text" name="category" placeholder="Re-enter Subject Category" id="edit_category" required><br>
         <input type="hidden" name="id" id="edit_subject_id">
       </div>
       <div class="modal-footer">
@@ -145,7 +151,9 @@
     $(".editButton").click(function(){
       var subject_id = $(this).attr('data-id');
       var subject = $(this).attr('data-subject');
+      var category = $(this).attr('data-subject');
       $("#edit_subject").val(subject);
+      $("#edit_category").val(category);
       $("#edit_subject_id").val(subject_id);
     });
 

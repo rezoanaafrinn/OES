@@ -16,7 +16,8 @@ class AdminController extends Controller
         
         try{
             Subject::insert([
-                'subject' => $request->subject
+                'subject' => $request->subject,
+                'category' => $request->category
             ]);
 
             return response()->json(['success'=>true,'msg'=>'Subject Added Successfully!']); 
@@ -34,6 +35,7 @@ class AdminController extends Controller
             
             $subject = Subject::find($request->id);
             $subject->subject = $request->subject;
+            $subject->category = $request->category;
             $subject->save();
 
             return response()->json(['success'=>true,'msg'=>'Subject Updated Successfully!']); 
@@ -123,7 +125,8 @@ class AdminController extends Controller
 
     public function qnaDashboard()
     {
-        return view('admin.qnaDashboard');
+        $questions = Question::with('answers')->get();
+        return view('admin.qnaDashboard',compact('questions'));
     }
 
 
