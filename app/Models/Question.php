@@ -10,11 +10,17 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
-        'question'
+        'question',
+        'subject'
     ];
 
     public function answers()
     {
         return $this->hasMany(Answer::class,'questions_id','id');
+    }
+
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class,'id','subject_id');
     }
 }

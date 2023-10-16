@@ -152,6 +152,7 @@
       var subject_id = $(this).attr('data-id');
       var subject = $(this).attr('data-subject');
       var category = $(this).attr('data-subject');
+      
       $("#edit_subject").val(subject);
       $("#edit_category").val(category);
       $("#edit_subject_id").val(subject_id);

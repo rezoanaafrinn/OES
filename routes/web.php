@@ -55,10 +55,18 @@ Route::group(['middleware'=>['web','checkAdmin']],function(){
     // Q&A Routes
     Route::get('/admin/qna-ans',[AdminController::class,'qnaDashboard']);
     Route::post('/add-qna-ans',[AdminController::class,'addQna'])->name('addQna');
+    Route::get('/get/qna-details',[AdminController::class,'getQnaDetails'])->name('getQnaDetails');
+    Route::get('/delete-ans',[AdminController::class,'deleteAns'])->name('deleteAns');
+    Route::post('/update-qna-ans',[AdminController::class,'updateQna'])->name('updateQna');
 
+    // qna exam routing
+    Route::get('/get-question',[AdminController::class,'getQuestions'])->name('getQuestions');
+    Route::post('/add-question',[AdminController::class,'addQuestions'])->name('addQuestions');
+    
 }); 
 
 Route::group(['middleware'=>['web','checkStudent']],function(){
     Route::get('/dashboard',[AuthController::class,'loaddashboard']);
-});
+
+}); 
 
